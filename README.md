@@ -10,4 +10,4 @@ and the rules to step from generation to generation are simple:
 * Underpopulation: if a living cell is surrounded by fewer than two living cells, it dies.
 * Reproduction: if a dead cell is surrounded by exactly three cells, it becomes a live cell.
 
-![alt text](GOF.png "Logo Title Text 1")
+![alt text](GOF.png "Game Of Life : Gosper glider gun")
