@@ -22,9 +22,8 @@ Image comparison:
 
 Solarized dark             |  Solarized Ocean
 :-------------------------:|:-------------------------:
-![](GOF.png)  |  ![](GOFSmall.png =400x)
-<img src="GOF.png" width="400">
-<img src="GOFSmall.png" width="400">
+![](GOF.png)  |  ![](GOFSmall.png)
+
 
 Game Of Life: Gosper glider gun:
 <img src="GOF.png" width="800">
