@@ -1,7 +1,5 @@
 import os
 import sys
-import time
-import traceback
 
 import numpy as np
 from PyQt5 import QtCore
@@ -9,7 +7,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from GOF import GOF
+from python.GOF import GOF
 
 
 class GUI(QMainWindow):
@@ -20,7 +18,7 @@ class GUI(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("Game of Life")
-        self.setWindowIcon(QIcon("icon.png"))
+        self.setWindowIcon(QIcon("assets/icon.png"))
         self.mainWidget = mainWidget()
         self.setGeometry(0, 0, self.mainWidget.width * self.mainWidget.scaleMultiplier,
                          self.mainWidget.height * self.mainWidget.scaleMultiplier)
@@ -52,7 +50,7 @@ class mainWidget(QWidget):
 
         # Auto play thread
         self.timer = QTimer()
-        self.timer.setInterval(10)
+        self.timer.setInterval(20)
         self.timer.timeout.connect(self.autoPlay)
 
         # Main layout
@@ -224,10 +222,10 @@ class infoLayout(QVBoxLayout):
         ####
 
         self.timeSlider = QSlider(Qt.Horizontal)
-        self.timeSlider.setValue(10)
+        self.timeSlider.setValue(20)
         self.timeSlider.setTickInterval(10)
         self.timeSlider.setSingleStep(10)
-        self.timeSlider.setMinimum(1)
+        self.timeSlider.setMinimum(10)
         self.timeSlider.setMaximum(500)
 
         self.timeLabel = QLabel()
