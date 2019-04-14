@@ -12,20 +12,24 @@ and the rules to step from generation to generation are simple:
 
 By enforcing these rules in sequential steps, beautiful and unexpected patterns can appear.
 
-#Done projekt
+# Done projekt
 I create a 2d array[100][100] that contains booleans where true is a live cell.
 Then I use create a QImage based on this array with black pixels being live cells,
 then I scale the image up by 7 so the image becomes 700x700px,
 this is so you're able to see whats going on.
 
 Image comparison:
+
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![](GOF.png)  |  ![](GOFSmall.png =400x)
 <img src="GOF.png" width="400">
 <img src="GOFSmall.png" width="400">
 
 Game Of Life: Gosper glider gun:
 <img src="GOF.png" width="800">
 
-#Mandatory:
+# Mandatory:
 As our mandatory 2/exam project we ware able to choose between four projects:
 * Game of Life
 * Chat System
