@@ -14,7 +14,7 @@ By enforcing these rules in sequential steps, beautiful and unexpected patterns 
 
 Game Of Life: Gosper glider gun:
 
-<img src="GOF.png" width="200">
+<img src="GOF.png" width="800">
 
 
 #Mandatory:
