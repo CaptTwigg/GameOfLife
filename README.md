@@ -20,9 +20,10 @@ this is so you're able to see whats going on.
 
 Image comparison:
 
-Solarized dark             |  Solarized Ocean
+Scale             |  No scale
 :-------------------------:|:-------------------------:
-![](GOF.png)  |  ![](GOFSmall.png)
+<img src="/GOF.png" width="300" height="300" />  |  <img src="/GOFSmall.png" width="300" height="300" /> 
+
 
 
 Game Of Life: Gosper glider gun:
