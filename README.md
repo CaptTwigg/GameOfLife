@@ -3,7 +3,8 @@
 2. [Mandatory](#mandatory)
 3. [Done project](#done)
 
-# Game of Life <a name="gameoflife"></a>
+<a name="gameoflife"></a>
+# Game of Life 
 Python couse 3 mandatory 2 assignment 
 
 Game Of Life: Gosper glider gun:
@@ -20,7 +21,8 @@ and the rules to step from generation to generation are simple:
 
 By enforcing these rules in sequential steps, beautiful and unexpected patterns can appear.
 
-# Mandatory: <a name="mandatory"></a>
+<a name="mandatory"></a>
+# Mandatory: 
 As our mandatory 2/exam project we ware able to choose between four projects:
 * Game of Life
 * Chat System
@@ -44,8 +46,8 @@ Requirements:
 * Support for default, random, and user dened initial state
 * Configurable speed, and step-by-step progression
 
-
-# Done project <a name="done"></a>
+<a name="done"></a>
+# Done project 
 ## Features 
 * Able to click anywhere on the canvas and it will toggle the pixel white or black.
 * Generate random pattern.
