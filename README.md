@@ -1,4 +1,9 @@
-# Game of Life
+# Table of contents
+1. [Game of Life](#gameoflife)
+2. [Mandatory](#mandatory)
+3. [Done project](#done)
+
+# Game of Life <a name="gameoflife"></a>
 Python couse 3 mandatory 2 assignment 
 
 Game Of Life: Gosper glider gun:
@@ -15,7 +20,32 @@ and the rules to step from generation to generation are simple:
 
 By enforcing these rules in sequential steps, beautiful and unexpected patterns can appear.
 
-# Done project
+# Mandatory: <a name="mandatory"></a>
+As our mandatory 2/exam project we ware able to choose between four projects:
+* Game of Life
+* Chat System
+* Web-based BBS System
+* QR-Code Generator
+
+In all projects there are some common requirements:
+* Write Pythonic code using the concepts from this course
+* Demonstrate correctness using tests, document code coverage
+* Separate configuration from implementation
+* Apply the DRY principle (Don't Repeat Yourself)
+
+I have chosen Game of Life and will be using PyQt5 as my GUI framework library. 
+
+Objective of project: Implement a GUI-based Game of Life.
+
+Requirements:
+* The project must implement a GUI for the user
+* Game grid is 100 x 100
+* Support for at least two rule sets
+* Support for default, random, and user dened initial state
+* Configurable speed, and step-by-step progression
+
+
+# Done project <a name="done"></a>
 ## Features 
 * Able to click anywhere on the canvas and it will toggle the pixel white or black.
 * Generate random pattern.
@@ -41,28 +71,4 @@ Scale                                            |  No scale
 The window is separated in 3 column; Canvas | Buttons | saved canvas
 
 
-
-# Mandatory:
-As our mandatory 2/exam project we ware able to choose between four projects:
-* Game of Life
-* Chat System
-* Web-based BBS System
-* QR-Code Generator
-
-In all projects there are some common requirements:
-* Write Pythonic code using the concepts from this course
-* Demonstrate correctness using tests, document code coverage
-* Separate configuration from implementation
-* Apply the DRY principle (Don't Repeat Yourself)
-
-I have chosen Game of Life and will be using PyQt5 as my GUI framework library. 
-
-Objective of project: Implement a GUI-based Game of Life.
-
-Requirements:
-* The project must implement a GUI for the user
-* Game grid is 100 x 100
-* Support for at least two rule sets
-* Support for default, random, and user dened initial state
-* Configurable speed, and step-by-step progression
 
