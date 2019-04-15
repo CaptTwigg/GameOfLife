@@ -2,6 +2,8 @@
 1. [Game of Life](#gameoflife)
 2. [Mandatory](#mandatory)
 3. [Done project](#done)
+        a. [Features](#subFeatures)
+        b. [Behind the scenes](#subBTS)
 
 <a name="gameoflife"></a>
 # Game of Life 
@@ -48,6 +50,7 @@ Requirements:
 
 <a name="done"></a>
 # Done project 
+<a name="subFeatures"></a>
 ## Features 
 * Able to click anywhere on the canvas and it will toggle the pixel white or black.
 * Generate random pattern.
@@ -58,6 +61,7 @@ Requirements:
 * Change how often the canvas updates.
 * Click saved patterns/canvas to reinstantiate 
 
+<a name="subBTS"></a>
 ## Behind the scenes
 I create a 2d array[100][100] that contains booleans where true is a live cell.
 Then I use create a QImage based on this array with black pixels being live cells,
