@@ -1,6 +1,9 @@
 # Game of Life
 Python couse 3 mandatory 2 assignment 
 
+Game Of Life: Gosper glider gun:
+<img src="GOF.png" width="800">
+
 In 1970 the British Mathematician John Conway created his "Game of Life" -- a set of rules that mimics the chaotic yet patterned growth of a colony of biological organisms. 
 The "game" takes place on a two-dimensional grid consisting of "living" and "dead" cells, 
 and the rules to step from generation to generation are simple:
@@ -37,8 +40,7 @@ Scale                                            |  No scale
 
 The window is separated in 3 column; Canvas | Buttons | saved canvas
 
-Game Of Life: Gosper glider gun:
-<img src="GOF.png" width="800">
+
 
 # Mandatory:
 As our mandatory 2/exam project we ware able to choose between four projects:
