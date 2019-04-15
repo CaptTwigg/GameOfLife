@@ -2,8 +2,8 @@
 1. [Game of Life](#gameoflife)
 2. [Mandatory](#mandatory)
 3. [Done project](#done)
-        a. [Features](#subFeatures)
-        b. [Behind the scenes](#subBTS)
+   1. [Features](#subFeatures)
+   2. [Behind the scenes](#subBTS)
 
 <a name="gameoflife"></a>
 # Game of Life 
