@@ -1,5 +1,8 @@
+import numpy as np
+
+
 class GOF:
-    def __init__(self, cellState, overpopulation, underpopulation, reproduction):
+    def __init__(self, cellState, overpopulation=3, underpopulation=2, reproduction=3):
         self.cellState = cellState
         self.overpopulation = overpopulation
         self.underpopulation = underpopulation
@@ -29,3 +32,12 @@ class GOF:
 
     def newCellState(self):
         return [[self.rule(x, y) for y in range(len(self.cellState[x]))] for x in range(len(self.cellState))]
+
+
+if __name__ == "__main__":
+    cell1 = [[False, False, False],
+             [False, False, False],
+             [False, False, False]]
+    gof = GOF(cell1)
+
+    print(gof.newCellState())

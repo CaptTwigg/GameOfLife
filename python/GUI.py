@@ -1,5 +1,7 @@
 import os
 import sys
+import time
+from threading import Thread
 
 import numpy as np
 from PyQt5 import QtCore
@@ -7,7 +9,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from python.GOF import GOF
+from GOF import GOF
 
 
 class GUI(QMainWindow):
@@ -33,11 +35,16 @@ class GUI(QMainWindow):
 class mainWidget(QWidget):
     def __init__(self):
         super().__init__()
+        self.start_time = time.time()
+        self.x = 1  # displays the frame rate every 1 second
+        self.counter = 0
         self.width, self.height = 100, 100
         self.scaleMultiplier = 7  # Scale image to better see whats going on ("Bigger" pixels)
         # Gen default canvas array (all false)
-        self.cleanCanvas = [[False for i in range(self.width)] for j in range(self.height)]
+        #self.cleanCanvas = [[False for i in range(self.width)] for j in range(self.height)]
+        self.cleanCanvas = np.zeros((self.width, self.height), dtype=bool)
         self.cellState = self.cleanCanvas
+        self.gamePaused = True
 
         # Rules
         self.overpopulation = 3
@@ -59,8 +66,8 @@ class mainWidget(QWidget):
         # Canvas
         self.pixelmap = QLabel()
         self.updateCanvas()
-        self.pixelmap.mousePressEvent = self.userDraw
         layout.addWidget(self.pixelmap)
+        self.pixelmap.mousePressEvent = self.userDraw
 
         # pattern buttons
         self.infoLayout.randomBtn.clicked.connect(self.randomPattern)
@@ -95,11 +102,17 @@ class mainWidget(QWidget):
     def userDraw(self, event):
         x = int(event.pos().x() / self.scaleMultiplier)
         y = int(event.pos().y() / self.scaleMultiplier)
-        if self.cellState[y][x]:
-            self.cellState[y][x] = False
-        else:
-            self.cellState[y][x] = True
-        self.updateCanvas()
+        print(event.pos().x(),event.pos().y())
+        print(self.pixelmap.width(), self.canvas.width())
+        print(x,y)
+        try:
+            if self.cellState[y][x]:
+                self.cellState[y][x] = False
+            else:
+                self.cellState[y][x] = True
+            self.updateCanvas()
+        except:
+            pass
 
     def createImg(self):
         image = QImage(self.width, self.height, QImage.Format_ARGB32)
@@ -114,27 +127,41 @@ class mainWidget(QWidget):
 
     def updateCanvas(self):
         self.image = self.createImg()
-        canvas = QPixmap(self.image) \
+        self.canvas = QPixmap(self.image) \
             .scaled(self.width * self.scaleMultiplier, self.height * self.scaleMultiplier, QtCore.Qt.KeepAspectRatio)
-        self.pixelmap.setPixmap(canvas)
+        self.pixelmap.setPixmap(self.canvas)
+
 
     def step(self):
         gof = GOF(self.cellState, self.overpopulation, self.underpopulation, self.reproduction)
         self.cellState = gof.newCellState()
         self.updateCanvas()
 
+
     def play(self):
         self.timer.start()
         self.infoLayout.playBtn.hide()
         self.infoLayout.pauseBtn.show()
+        self.gamePaused = False
+        # self.thread = Thread(target=self.autoPlay)
+        # self.thread.start()
 
     def pause(self):
         self.timer.stop()
+        self.gamePaused = True
         self.infoLayout.playBtn.show()
         self.infoLayout.pauseBtn.hide()
 
     def autoPlay(self):
+        # while not self.gamePaused:
+
         self.step()
+
+        self.counter += 1
+        if (time.time() - self.start_time) > self.x:
+            print("FPS: ", self.counter / (time.time() - self.start_time))
+            self.counter = 0
+            self.start_time = time.time()
 
     def timerFunction(self):
         self.timer.setInterval(self.infoLayout.timeSlider.value())
@@ -208,8 +235,11 @@ class infoLayout(QVBoxLayout):
         #### Rules fields
         rulesLayout = QFormLayout()
         self.overpopulation = QSpinBox()
+        self.overpopulation.setStyleSheet("color : black")
         self.underpopulation = QSpinBox()
+        self.underpopulation.setStyleSheet("color : black")
         self.reproduction = QSpinBox()
+        self.reproduction.setStyleSheet("color : black")
 
         rulesLayout.addRow("Overpopulation   > ", self.overpopulation)
         rulesLayout.addRow("Underpopulation < ", self.underpopulation)
@@ -225,7 +255,7 @@ class infoLayout(QVBoxLayout):
         self.timeSlider.setValue(20)
         self.timeSlider.setTickInterval(10)
         self.timeSlider.setSingleStep(10)
-        self.timeSlider.setMinimum(10)
+        self.timeSlider.setMinimum(0)
         self.timeSlider.setMaximum(500)
 
         self.timeLabel = QLabel()
@@ -250,7 +280,7 @@ class savedPatterLayout(QVBoxLayout):
 
     def update(self):
         for i in reversed(range(self.count())):
-             self.itemAt(i).widget().setParent(None)
+            self.itemAt(i).widget().setParent(None)
         patterns = {}
         for filename in os.listdir("patterns"):
             patterns[filename] = (QImage(f"patterns/{filename}"))
@@ -276,8 +306,8 @@ class savedPatterLayout(QVBoxLayout):
 
     def genArray(self, image):
         self.mainWidget.cellState = [
-                [image.pixelColor(y, x).name() == "#000000" for y in range(image.height())]
-                for x in range(image.width())
+            [image.pixelColor(y, x).name() == "#000000" for y in range(image.height())]
+            for x in range(image.width())
         ]
         self.mainWidget.updateCanvas()
 
