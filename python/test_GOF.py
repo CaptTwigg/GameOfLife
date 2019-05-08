@@ -11,6 +11,8 @@ from GOF import GOF
 # 4. dead        3           live
 class test_GOF(unittest.TestCase):
     def setUp(self):
+        self.deadList = [3]  # dead become alive
+        self.aliveList = [2, 3]  # alive lives on
         # patterns
         self.cell1 = [[False, False, False],
                       [False, False, False],
@@ -33,45 +35,45 @@ class test_GOF(unittest.TestCase):
                       [True, True, True]]
 
     def test_all_false(self):
-        self.gof = GOF(self.cell1)
+        self.gof = GOF(self.cell1, aliveList=self.aliveList, deadList=self.deadList)
         self.assertEqual(self.gof.rule(0, 0), False)
         self.assertEqual(self.gof.rule(1, 1), False)
         self.assertEqual(self.gof.rule(2, 2), False)
 
-        self.assertEqual(self.gof.newCellState().tolist(), [[False, False, False],
-                                                            [False, False, False],
-                                                            [False, False, False]])
+        self.assertEqual(self.gof.newCellState(), [[False, False, False],
+                                                   [False, False, False],
+                                                   [False, False, False]])
 
     def test_semi(self):
-        self.gof = GOF(self.cell2)
+        self.gof = GOF(self.cell2, aliveList=self.aliveList, deadList=self.deadList)
         self.assertEqual(self.gof.rule(0, 0), False)
         self.assertEqual(self.gof.rule(1, 1), False)
         self.assertEqual(self.gof.rule(2, 2), False)
-        self.assertEqual(self.gof.newCellState().tolist(), [[False, False, False],
-                                                            [False, False, False],
-                                                            [False, False, False]])
+        self.assertEqual(self.gof.newCellState(), [[False, False, False],
+                                                   [False, False, False],
+                                                   [False, False, False]])
 
-        self.gof = GOF(self.cell3)
+        self.gof = GOF(self.cell3, aliveList=self.aliveList, deadList=self.deadList)
         self.assertEqual(self.gof.rule(0, 0), True)
         self.assertEqual(self.gof.rule(1, 1), False)
         self.assertEqual(self.gof.rule(2, 2), False)
-        self.assertEqual(self.gof.newCellState().tolist(), [[True, True, False],
-                                                            [True, False, False],
-                                                            [False, False, False]])
+        self.assertEqual(self.gof.newCellState(), [[True, True, False],
+                                                   [True, False, False],
+                                                   [False, False, False]])
 
-        self.gof = GOF(self.cell4)
+        self.gof = GOF(self.cell4, aliveList=self.aliveList, deadList=self.deadList)
         self.assertEqual(self.gof.rule(0, 0), True)
         self.assertEqual(self.gof.rule(1, 1), False)
         self.assertEqual(self.gof.rule(2, 2), True)
-        self.assertEqual(self.gof.newCellState().tolist(), [[True, True, True],
-                                                            [True, False, True],
-                                                            [True, True, True]])
+        self.assertEqual(self.gof.newCellState(), [[True, True, True],
+                                                   [True, False, True],
+                                                   [True, True, True]])
 
     def test_all_true(self):
-        self.gof = GOF(self.cell5)
+        self.gof = GOF(self.cell5, aliveList=self.aliveList, deadList=self.deadList)
         self.assertEqual(self.gof.rule(0, 0), True)
         self.assertEqual(self.gof.rule(1, 1), False)
         self.assertEqual(self.gof.rule(2, 2), True)
-        self.assertEqual(self.gof.newCellState().tolist(), [[True, False, True],
-                                                            [False, False, False],
-                                                            [True, False, True]])
+        self.assertEqual(self.gof.newCellState(), [[True, False, True],
+                                                   [False, False, False],
+                                                   [True, False, True]])
