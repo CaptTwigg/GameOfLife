@@ -2,11 +2,10 @@ import numpy as np
 
 
 class GOF:
-    def __init__(self, cellState, overpopulation=3, underpopulation=2, reproduction=3):
+    def __init__(self, cellState, aliveList, deadList):
         self.cellState = cellState
-        self.overpopulation = overpopulation
-        self.underpopulation = underpopulation
-        self.reproduction = reproduction
+        self.aliveList = aliveList
+        self.deadList = deadList
 
     def rule(self, x, y):
         try:
@@ -16,18 +15,14 @@ class GOF:
             alive = surroundingCells.count(True)
             currentCell = self.cellState[x][y]
 
-            if currentCell and alive > self.overpopulation:
-                return False
-            if currentCell and (alive == 2 or alive == self.reproduction):
+            if currentCell and alive in self.aliveList:
                 return True
-            if currentCell and alive < self.underpopulation:
-                return False
-            if alive == self.reproduction:
+            if alive in self.deadList:
                 return True
 
         except IndexError:
             pass
-            # print("asdf")
+            print("asdf")
         return False
 
     def newCellState(self):

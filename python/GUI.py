@@ -41,19 +41,20 @@ class mainWidget(QWidget):
         self.width, self.height = 100, 100
         self.scaleMultiplier = 7  # Scale image to better see whats going on ("Bigger" pixels)
         # Gen default canvas array (all false)
-        #self.cleanCanvas = [[False for i in range(self.width)] for j in range(self.height)]
+        # self.cleanCanvas = [[False for i in range(self.width)] for j in range(self.height)]
         self.cleanCanvas = np.zeros((self.width, self.height), dtype=bool)
         self.cellState = self.cleanCanvas
         self.gamePaused = True
 
-        # Rules
-        self.overpopulation = 3
-        self.underpopulation = 2
-        self.reproduction = 3
-
         # Buttons and saved patterns layouts
         self.infoLayout = infoLayout()
         self.savePatternLayout = savedPatterLayout(self)
+
+        # Rules
+        self.deadButtons = [myCheckBox(str(b + 1)) for b in range(9)]
+        self.aliveButtons = [myCheckBox(str(b + 1)) for b in range(9)]
+        self.deadList = []
+        self.aliveList = []
 
         # Auto play thread
         self.timer = QTimer()
@@ -79,15 +80,12 @@ class mainWidget(QWidget):
         self.infoLayout.pauseBtn.clicked.connect(self.pause)
         self.infoLayout.stepBtn.clicked.connect(self.step)
 
-        # Rules fields
-        self.infoLayout.overpopulation.valueChanged.connect(lambda newValue: self.setOverpopulation(newValue))
-        self.infoLayout.overpopulation.setValue(self.overpopulation)
-
-        self.infoLayout.underpopulation.valueChanged.connect(lambda newValue: self.setUnderpopulation(newValue))
-        self.infoLayout.underpopulation.setValue(self.underpopulation)
-
-        self.infoLayout.reproduction.valueChanged.connect(lambda newValue: self.setReproduction(newValue))
-        self.infoLayout.reproduction.setValue(self.reproduction)
+        # Rules checkbox
+        for d, a in zip(self.infoLayout.deadButtons, self.infoLayout.aliveButtons):
+            d.clicked.connect(lambda: self.updateRules())
+            a.clicked.connect(lambda: self.updateRules())
+        self.infoLayout.defaultRuleButton.clicked.connect(self.defaultRules)
+        self.updateRules()  # set default rules
 
         # Slider
         self.infoLayout.timeSlider.valueChanged[int].connect(self.timerFunction)
@@ -102,9 +100,9 @@ class mainWidget(QWidget):
     def userDraw(self, event):
         x = int(event.pos().x() / self.scaleMultiplier)
         y = int(event.pos().y() / self.scaleMultiplier)
-        print(event.pos().x(),event.pos().y())
+        print(event.pos().x(), event.pos().y())
         print(self.pixelmap.width(), self.canvas.width())
-        print(x,y)
+        print(x, y)
         try:
             if self.cellState[y][x]:
                 self.cellState[y][x] = False
@@ -131,12 +129,10 @@ class mainWidget(QWidget):
             .scaled(self.width * self.scaleMultiplier, self.height * self.scaleMultiplier, QtCore.Qt.KeepAspectRatio)
         self.pixelmap.setPixmap(self.canvas)
 
-
     def step(self):
-        gof = GOF(self.cellState, self.overpopulation, self.underpopulation, self.reproduction)
+        gof = GOF(self.cellState, self.aliveList, self.deadList)
         self.cellState = gof.newCellState()
         self.updateCanvas()
-
 
     def play(self):
         self.timer.start()
@@ -172,21 +168,26 @@ class mainWidget(QWidget):
         self.updateCanvas()
 
     def clearCanvas(self):
-        self.cellState = self.cleanCanvas
+        self.cellState = np.zeros((self.width, self.height), dtype=bool)
         self.updateCanvas()
 
     def savePattern(self):
         self.image.save(f"patterns/{self.infoLayout.filename.text()}.png")
         self.savePatternLayout.update()
 
-    def setOverpopulation(self, value):
-        self.overpopulation = value
+    def updateRules(self):
+        self.deadList = [int(i.value) for i in self.infoLayout.deadButtons if i.isChecked()]
+        self.aliveList = [int(i.value) for i in self.infoLayout.aliveButtons if i.isChecked()]
 
-    def setUnderpopulation(self, value):
-        self.underpopulation = value
 
-    def setReproduction(self, value):
-        self.reproduction = value
+    def defaultRules(self):
+        # TODO WIP
+        self.infoLayout.deadButtons = [myCheckBox(str(b + 1)) for b in range(9)]
+        self.infoLayout.aliveButtons = [myCheckBox(str(b + 1)) for b in range(9)]
+        self.infoLayout.deadButtons[2].setChecked(True)
+        self.infoLayout.aliveButtons[1].setChecked(True)
+        self.infoLayout.aliveButtons[2].setChecked(True)
+
 
 
 class infoLayout(QVBoxLayout):
@@ -232,24 +233,41 @@ class infoLayout(QVBoxLayout):
 
         self.addSpacing(spacing)
 
-        #### Rules fields
-        rulesLayout = QFormLayout()
-        self.overpopulation = QSpinBox()
-        self.overpopulation.setStyleSheet("color : black")
-        self.underpopulation = QSpinBox()
-        self.underpopulation.setStyleSheet("color : black")
-        self.reproduction = QSpinBox()
-        self.reproduction.setStyleSheet("color : black")
+        #### Checkbox rules
+        self.deadButtons = [myCheckBox(str(b + 1)) for b in range(9)]
+        self.aliveButtons = [myCheckBox(str(b + 1)) for b in range(9)]
+        # Default rules
+        self.deadButtons[2].setChecked(True)
+        self.aliveButtons[1].setChecked(True)
+        self.aliveButtons[2].setChecked(True)
+        #
+        self.buttonsLayout = QHBoxLayout()
+        self.buttonGrid = QGridLayout()
+        self.buttonGrid.setAlignment(Qt.AlignCenter)
 
-        rulesLayout.addRow("Overpopulation   > ", self.overpopulation)
-        rulesLayout.addRow("Underpopulation < ", self.underpopulation)
-        rulesLayout.addRow("Reproduction      = ", self.reproduction)
-        self.addLayout(rulesLayout)
+        for i in range(9):
+            self.buttonGrid.addWidget(QLabel(str(i + 1)), 0, i + 1)
+
+        self.buttonGrid.addWidget(QLabel("(Dead) becomes alive..."), 1, 0)
+        for i, b in enumerate(self.deadButtons):
+            self.buttonGrid.addWidget(b, 1, i + 1)
+
+        self.buttonGrid.addWidget(QLabel("(Live) lives on..."), 2, 0)
+        for i, b in enumerate(self.aliveButtons):
+            self.buttonGrid.addWidget(b, 2, i + 1)
+
+        # TODO default button, need to instantiate new infolayout
+        # out commented for now
+        self.defaultRuleButton = QPushButton("Default rules")
+        #self.buttonGrid.addWidget(self.defaultRuleButton, 3, 4, 3, 7)
+
+        self.addLayout(self.buttonGrid)
+
         ####
 
         self.addSpacing(spacing)
 
-        ####
+        #### Timer slider
 
         self.timeSlider = QSlider(Qt.Horizontal)
         self.timeSlider.setValue(20)
@@ -310,6 +328,12 @@ class savedPatterLayout(QVBoxLayout):
             for x in range(image.width())
         ]
         self.mainWidget.updateCanvas()
+
+
+class myCheckBox(QCheckBox):
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
 
 
 if __name__ == '__main__':
