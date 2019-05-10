@@ -287,6 +287,10 @@ class infoLayout(QVBoxLayout):
         ####
 
         self.addSpacing(spacing)
+        spacerItem = QSpacerItem(20, 245, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.addSpacerItem(spacerItem)
+
+
 
 
 class savedPatterLayout(QVBoxLayout):
