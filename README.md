@@ -57,7 +57,7 @@ Requirements:
 * Clear/reset canvas.
 * Save a pattern/canvas with a name for reuse or display.
 * Auto play the game and pause auto play, and able to take one step at the time
-* Choose new rules for the cells.
+* Choose new rules for the cells by choosing when dead cells become alive and when live cells live on.
 * Change how often the canvas updates.
 * Click saved patterns/canvas to reinstantiate 
 
