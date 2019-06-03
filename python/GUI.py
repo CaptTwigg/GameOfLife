@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import time
@@ -84,8 +85,12 @@ class mainWidget(QWidget):
         for d, a in zip(self.infoLayout.deadButtons, self.infoLayout.aliveButtons):
             d.clicked.connect(lambda: self.updateRules())
             a.clicked.connect(lambda: self.updateRules())
-        self.infoLayout.defaultRuleButton.clicked.connect(self.defaultRules)
         self.updateRules()  # set default rules
+
+        # Rule wheel
+        self.infoLayout.rulesComboBox.currentIndexChanged.connect(lambda index: self.setRules(index))
+        # Rule save button
+        self.infoLayout.ruleBtn.pressed.connect(lambda: self.saveRulesToFile())
 
         # Slider
         self.infoLayout.timeSlider.valueChanged[int].connect(self.timerFunction)
@@ -97,20 +102,19 @@ class mainWidget(QWidget):
         hLayout.addLayout(self.savePatternLayout)
         self.setLayout(hLayout)
 
+        # Set default rules on start up
+        self.setRules(0)
+        # Set rule wheel
+        self.updateRuleWheel()
+
     def userDraw(self, event):
         x = int(event.pos().x() / self.scaleMultiplier)
         y = int(event.pos().y() / self.scaleMultiplier)
-        print(event.pos().x(), event.pos().y())
-        print(self.pixelmap.width(), self.canvas.width())
-        print(x, y)
-        try:
-            if self.cellState[y][x]:
-                self.cellState[y][x] = False
-            else:
-                self.cellState[y][x] = True
-            self.updateCanvas()
-        except:
-            pass
+        if self.cellState[y][x]:
+            self.cellState[y][x] = False
+        else:
+            self.cellState[y][x] = True
+        self.updateCanvas()
 
     def createImg(self):
         image = QImage(self.width, self.height, QImage.Format_ARGB32)
@@ -132,6 +136,7 @@ class mainWidget(QWidget):
     def step(self):
         gof = GOF(self.cellState, self.aliveList, self.deadList)
         self.cellState = gof.newCellState()
+
         self.updateCanvas()
 
     def play(self):
@@ -179,15 +184,41 @@ class mainWidget(QWidget):
         self.deadList = [int(i.value) for i in self.infoLayout.deadButtons if i.isChecked()]
         self.aliveList = [int(i.value) for i in self.infoLayout.aliveButtons if i.isChecked()]
 
+    def getRules(self):
+        with open("rules.json", "r") as f:
+            return json.load(f)
 
-    def defaultRules(self):
-        # TODO WIP
-        self.infoLayout.deadButtons = [myCheckBox(str(b + 1)) for b in range(9)]
-        self.infoLayout.aliveButtons = [myCheckBox(str(b + 1)) for b in range(9)]
-        self.infoLayout.deadButtons[2].setChecked(True)
-        self.infoLayout.aliveButtons[1].setChecked(True)
-        self.infoLayout.aliveButtons[2].setChecked(True)
+    def setRules(self, ruleindex):
+        data = self.getRules()
+        data = data[ruleindex]
 
+        # Reset rule checkboxes
+        for d, a in zip(self.infoLayout.deadButtons, self.infoLayout.aliveButtons):
+            d.setChecked(False)
+            a.setChecked(False)
+
+        for dead in data["dead"]:
+            self.infoLayout.deadButtons[dead - 1].setChecked(True)
+        for alive in data["alive"]:
+            self.infoLayout.aliveButtons[alive - 1].setChecked(True)
+        self.updateRules()
+
+    def updateRuleWheel(self):
+        self.infoLayout.rulesComboBox.clear()
+        for rule in self.getRules():
+            self.infoLayout.rulesComboBox.addItem(rule["name"])
+
+    def saveRulesToFile(self):
+        newRule = {
+                "name" : self.infoLayout.rulename.text(),
+                "alive": self.aliveList,
+                "dead" : self.deadList
+        }
+        data = self.getRules()
+        data.append(newRule)
+        with open("rules.json", "w") as f:
+            json.dump(data, f)
+        self.updateRuleWheel()
 
 
 class infoLayout(QVBoxLayout):
@@ -237,9 +268,9 @@ class infoLayout(QVBoxLayout):
         self.deadButtons = [myCheckBox(str(b + 1)) for b in range(9)]
         self.aliveButtons = [myCheckBox(str(b + 1)) for b in range(9)]
         # Default rules
-        self.deadButtons[2].setChecked(True)
-        self.aliveButtons[1].setChecked(True)
-        self.aliveButtons[2].setChecked(True)
+        # self.deadButtons[2].setChecked(True)
+        # self.aliveButtons[1].setChecked(True)
+        # self.aliveButtons[2].setChecked(True)
         #
         self.buttonsLayout = QHBoxLayout()
         self.buttonGrid = QGridLayout()
@@ -256,10 +287,15 @@ class infoLayout(QVBoxLayout):
         for i, b in enumerate(self.aliveButtons):
             self.buttonGrid.addWidget(b, 2, i + 1)
 
-        # TODO default button, need to instantiate new infolayout
-        # out commented for now
-        self.defaultRuleButton = QPushButton("Default rules")
-        #self.buttonGrid.addWidget(self.defaultRuleButton, 3, 4, 3, 7)
+        # Rules wheel
+        self.rulename = QLineEdit()
+        self.rulename.setPlaceholderText("Rule name")
+        self.ruleBtn = QPushButton("Save Rule")
+        self.rulesComboBox = QComboBox()
+
+        self.buttonGrid.addWidget(self.rulesComboBox, 3, 1, 1, 9)
+        self.buttonGrid.addWidget(self.rulename, 4, 0)
+        self.buttonGrid.addWidget(self.ruleBtn, 4, 1, 1, 9)
 
         self.addLayout(self.buttonGrid)
 
@@ -289,8 +325,6 @@ class infoLayout(QVBoxLayout):
         self.addSpacing(spacing)
         spacerItem = QSpacerItem(20, 245, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.addSpacerItem(spacerItem)
-
-
 
 
 class savedPatterLayout(QVBoxLayout):
@@ -328,8 +362,8 @@ class savedPatterLayout(QVBoxLayout):
 
     def genArray(self, image):
         self.mainWidget.cellState = [
-            [image.pixelColor(y, x).name() == "#000000" for y in range(image.height())]
-            for x in range(image.width())
+                [image.pixelColor(y, x).name() == "#000000" for y in range(image.height())]
+                for x in range(image.width())
         ]
         self.mainWidget.updateCanvas()
 

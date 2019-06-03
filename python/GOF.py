@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 
 
@@ -8,21 +10,18 @@ class GOF:
         self.deadList = deadList
 
     def rule(self, x, y):
-        try:
-            ADJACENTS = {(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1, -1), (0, -1), (1, -1)}
-            surroundingCells = [self.cellState[x + dx][y + dy] for dy, dx in ADJACENTS
-                                if 0 <= y + dy < len(self.cellState[0]) and 0 <= x + dx < len(self.cellState)]
-            alive = surroundingCells.count(True)
-            currentCell = self.cellState[x][y]
 
-            if currentCell and alive in self.aliveList:
-                return True
-            if alive in self.deadList:
-                return True
+        ADJACENTS = {(-1, 1), (0, 1), (1, 1), (-1, 0), (1, 0), (-1, -1), (0, -1), (1, -1)}
+        surrounding_cells = [self.cellState[x + dx][y + dy] for dy, dx in ADJACENTS
+                            if 0 <= y + dy < len(self.cellState[0]) and 0 <= x + dx < len(self.cellState)]
+        alive = surrounding_cells.count(True)
+        current_cell = self.cellState[x][y]
 
-        except IndexError:
-            pass
-            print("asdf")
+        if current_cell and alive in self.aliveList:
+            return True
+        if alive in self.deadList:
+            return True
+
         return False
 
     def newCellState(self):
@@ -30,9 +29,19 @@ class GOF:
 
 
 if __name__ == "__main__":
-    cell1 = [[False, False, False],
-             [False, False, False],
+    cell1 = [[True, True, False],
+             [True, False, False],
              [False, False, False]]
-    gof = GOF(cell1)
-
-    print(gof.newCellState())
+    cell1 = np.random.choice(a=[False, True], size=(100, 100))
+    deadList = [3]  # dead become alive
+    aliveList = [2, 3]  # alive lives on
+    gof = GOF(cell1, aliveList, deadList)
+    timer = 0
+    for i in range(10):
+        # gof = GOF(cell1, aliveList, deadList)
+        # gof.cellState = np.random.choice(a=[False, True], size=(100, 100))
+        t0 = time.time()
+        gof.cellState = gof.newCellState()
+        print(gof.cellState)
+        timer += time.time() - t0
+    print(timer)
