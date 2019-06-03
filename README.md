@@ -72,7 +72,7 @@ Image comparison:
 
 Scale                                            |  No scale
 :-----------------------------------------------:|:-----------------------------------------------:
-<img src="/GOF.png" width="300" height="300" />  |  <img src="/GOFSmall.png" width="300" height="300" /> 
+<img src="GOF.png" width="300" height="300" />  |  <img src="GOFSmall.png" width="300" height="300" /> 
 
 The window is separated in 3 column; Canvas | Buttons | saved canvas
 
