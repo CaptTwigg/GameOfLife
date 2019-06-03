@@ -60,6 +60,8 @@ Requirements:
 * Choose new rules for the cells by choosing when dead cells become alive and when live cells live on.
 * Change how often the canvas updates.
 * Click saved patterns/canvas to reinstantiate 
+* Choose a rule from a rule set
+* Save a rule
 
 <a name="subBTS"></a>
 ## Behind the scenes
